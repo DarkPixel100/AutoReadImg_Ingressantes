@@ -1,15 +1,9 @@
-import pytesseract
+# Imports
+import pytesseract as pytss
+import downloader
 from PIL import Image
 
-# Open the image file
-PS = "FUVEST 2025"
-image1 = Image.open(f'image1{PS}.png')
-image2 = Image.open(f'image2{PS}.png')
-
-# Perform OCR using PyTesseract
-text1 = pytesseract.image_to_string(image1)
-text2 = pytesseract.image_to_string(image2)
-
+# Funções auxiliares
 def decide(containsFactor, doesntContainF, factor):
      if(factor in containsFactor): return [containsFactor,doesntContainF]
      return [doesntContainF,containsFactor]
@@ -52,17 +46,30 @@ def CompConhecimento(t1, t2):
 def ProvaoPaulista(t1, t2):
      return
 
-notasStr = []
-rankStr = []
+# Função de extração dos dados das imagens
+def getScreenshotValues(PS, url1, url2):
+     # image1_data = requests.get(url1 + "&export=download", stream=True)
+     # image2_data = requests.get(url2 + "&export=download", stream=True)
+     
+     # image1 = Image.open(io.BytesIO(image1_data.content))
+     # image2 = Image.open(io.BytesIO(image2_data.content))
 
-if PS == "ENEM-USP 2024":
-     [notasStr,rankStr] = ENEMUSP(text1, text2)
-elif PS == "FUVEST 2025":
-     [notasStr,rankStr] = FUVEST(text1, text2)
-elif PS == "Ingresso na USP via Competições do Conhecimento 2025":
-     [notasStr,rankStr] = CompConhecimento(text1, text2)
-else:
-     [notasStr,rankStr] = ProvaoPaulista(text1, text2)
+     # Perform OCR using PyTesseract
+     text1 = pytss.image_to_string(image1)
+     text2 = pytss.image_to_string(image2)
 
-print(notasStr)
-print(rankStr)
+     notasStr = []
+     rankStr = []
+
+     if PS == "ENEM-USP 2025":
+          [notasStr,rankStr] = ENEMUSP(text1, text2)
+     elif PS == "FUVEST 2025":
+          [notasStr,rankStr] = FUVEST(text1, text2)
+     elif PS == "Ingresso na USP via Competições do Conhecimento 2025":
+          [notasStr,rankStr] = CompConhecimento(text1, text2)
+     else:
+          [notasStr,rankStr] = ProvaoPaulista(text1, text2)
+
+     print(notasStr)
+     print(rankStr)
+     return [notasStr, rankStr]
